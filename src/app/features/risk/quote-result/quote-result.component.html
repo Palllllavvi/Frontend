@@ -1,0 +1,181 @@
+<div class="quote-result-wrapper">
+  <!-- Equipment Quote Result -->
+  @if (equipmentQuote) {
+    <mat-card class="quote-card equipment-quote">
+      <mat-card-header>
+        <mat-icon mat-card-avatar class="quote-type-icon equipment">computer</mat-icon>
+        <mat-card-title>Equipment Insurance Quote</mat-card-title>
+        <mat-card-subtitle>Quote ID: {{ equipmentQuote.quoteId }}</mat-card-subtitle>
+      </mat-card-header>
+      <mat-card-content>
+
+        <div class="quote-summary-grid">
+          <div class="summary-item">
+            <span class="summary-label">Total Insured Value</span>
+            <span class="summary-value primary">₹{{ equipmentQuote.totalInsuredValue | number:'1.2-2' }}</span>
+          </div>
+          <div class="summary-item">
+            <span class="summary-label">Coverage Duration</span>
+            <span class="summary-value">{{ equipmentQuote.durationDays }} days</span>
+          </div>
+          <div class="summary-item">
+            <span class="summary-label">Start Date</span>
+            <span class="summary-value">{{ equipmentQuote.startDate | date:'mediumDate' }}</span>
+          </div>
+          <div class="summary-item">
+            <span class="summary-label">End Date</span>
+            <span class="summary-value">{{ equipmentQuote.endDate | date:'mediumDate' }}</span>
+          </div>
+        </div>
+
+        <mat-divider class="section-divider"></mat-divider>
+
+        <div class="premium-breakdown">
+          <h4 class="breakdown-title">Premium Breakdown</h4>
+          <div class="breakdown-row">
+            <span>Base Premium</span>
+            <span>₹{{ equipmentQuote.basePremium | number:'1.2-2' }}</span>
+          </div>
+          <div class="breakdown-row">
+            <span>Risk Adjustment</span>
+            <span [class.positive]="equipmentQuote.riskAdjustment > 0">
+              +₹{{ equipmentQuote.riskAdjustment | number:'1.2-2' }}
+            </span>
+          </div>
+          <div class="breakdown-row">
+            <span>Deductible Discount</span>
+            <span class="discount">-₹{{ equipmentQuote.deductibleDiscount | number:'1.2-2' }}</span>
+          </div>
+          <div class="breakdown-row">
+            <span>Tax</span>
+            <span>₹{{ equipmentQuote.taxAmount | number:'1.2-2' }}</span>
+          </div>
+          <mat-divider class="section-divider"></mat-divider>
+          <div class="breakdown-row total-row">
+            <span>Total Payable</span>
+            <span class="total-amount">₹{{ equipmentQuote.totalPayable | number:'1.2-2' }}</span>
+          </div>
+        </div>
+
+        @if (equipmentQuote.coveredPerils?.length) {
+          <mat-divider class="section-divider"></mat-divider>
+          <h4 class="breakdown-title">Covered Perils</h4>
+          <div class="chip-list">
+            @for (peril of equipmentQuote.coveredPerils; track peril) {
+              <mat-chip class="peril-chip">{{ peril }}</mat-chip>
+            }
+          </div>
+        }
+
+        @if (equipmentQuote.termsSummary?.length) {
+          <mat-divider class="section-divider"></mat-divider>
+          <h4 class="breakdown-title">Terms Summary</h4>
+          <ul class="terms-list">
+            @for (term of equipmentQuote.termsSummary; track term) {
+              <li>{{ term }}</li>
+            }
+          </ul>
+        }
+
+      </mat-card-content>
+      <mat-card-actions>
+        <a mat-raised-button color="primary" [routerLink]="['/policies/equipment/issue']">
+          <mat-icon>add_circle</mat-icon>
+          Issue Policy Based on This Quote
+        </a>
+      </mat-card-actions>
+    </mat-card>
+  }
+
+  <!-- Income Quote Result -->
+  @if (incomeQuote) {
+    <mat-card class="quote-card income-quote">
+      <mat-card-header>
+        <mat-icon mat-card-avatar class="quote-type-icon income">payments</mat-icon>
+        <mat-card-title>Income Assurance Quote</mat-card-title>
+        <mat-card-subtitle>Quote ID: {{ incomeQuote.quoteId }}</mat-card-subtitle>
+      </mat-card-header>
+      <mat-card-content>
+
+        <div class="quote-summary-grid">
+          <div class="summary-item">
+            <span class="summary-label">Monthly Benefit</span>
+            <span class="summary-value primary">₹{{ incomeQuote.monthlyBenefit | number:'1.2-2' }}</span>
+          </div>
+          <div class="summary-item">
+            <span class="summary-label">Benefit Period</span>
+            <span class="summary-value">{{ incomeQuote.benefitPeriodMonths }} months</span>
+          </div>
+          <div class="summary-item">
+            <span class="summary-label">Max Potential Benefit</span>
+            <span class="summary-value">₹{{ incomeQuote.maxPotentialBenefit | number:'1.2-2' }}</span>
+          </div>
+          <div class="summary-item">
+            <span class="summary-label">Policy Period</span>
+            <span class="summary-value">
+              {{ incomeQuote.policyStartDate | date:'mediumDate' }} – {{ incomeQuote.policyEndDate | date:'mediumDate' }}
+            </span>
+          </div>
+        </div>
+
+        <mat-divider class="section-divider"></mat-divider>
+
+        <div class="premium-breakdown">
+          <h4 class="breakdown-title">Premium Breakdown</h4>
+          <div class="breakdown-row">
+            <span>Annual Base Premium</span>
+            <span>₹{{ incomeQuote.annualBasePremium | number:'1.2-2' }}</span>
+          </div>
+          <div class="breakdown-row">
+            <span>Risk Adjustment</span>
+            <span>+₹{{ incomeQuote.riskAdjustment | number:'1.2-2' }}</span>
+          </div>
+          <div class="breakdown-row">
+            <span>Tax</span>
+            <span>₹{{ incomeQuote.taxAmount | number:'1.2-2' }}</span>
+          </div>
+          <mat-divider class="section-divider"></mat-divider>
+          <div class="breakdown-row total-row">
+            <span>Total Payable</span>
+            <span class="total-amount">₹{{ incomeQuote.totalPayable | number:'1.2-2' }}</span>
+          </div>
+        </div>
+
+        @if (incomeQuote.coveredEvents?.length) {
+          <mat-divider class="section-divider"></mat-divider>
+          <h4 class="breakdown-title">Covered Events</h4>
+          <div class="chip-list">
+            @for (event of incomeQuote.coveredEvents; track event) {
+              <mat-chip class="peril-chip">{{ event }}</mat-chip>
+            }
+          </div>
+        }
+
+        @if (incomeQuote.exclusions?.length) {
+          <mat-divider class="section-divider"></mat-divider>
+          <h4 class="breakdown-title">Exclusions</h4>
+          <div class="chip-list">
+            @for (exclusion of incomeQuote.exclusions; track exclusion) {
+              <mat-chip class="exclusion-chip">{{ exclusion }}</mat-chip>
+            }
+          </div>
+        }
+
+        @if (incomeQuote.underwritingNote) {
+          <mat-divider class="section-divider"></mat-divider>
+          <div class="underwriting-note">
+            <mat-icon class="note-icon">info</mat-icon>
+            <p>{{ incomeQuote.underwritingNote }}</p>
+          </div>
+        }
+
+      </mat-card-content>
+      <mat-card-actions>
+        <a mat-raised-button color="primary" [routerLink]="['/policies/income/issue']">
+          <mat-icon>add_circle</mat-icon>
+          Issue Policy Based on This Quote
+        </a>
+      </mat-card-actions>
+    </mat-card>
+  }
+</div>

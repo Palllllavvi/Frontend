@@ -1,0 +1,300 @@
+<div class="claim-details-container">
+  <!-- Top Navigation -->
+  <div class="top-nav">
+    <a mat-button routerLink="/claims" class="back-link">
+      <mat-icon>arrow_back</mat-icon>
+      <span>Back to Claims</span>
+    </a>
+  </div>
+
+  @if (isLoading) {
+    <div class="loading-state">
+      <mat-spinner diameter="44"></mat-spinner>
+      <p>Loading claim investigation record...</p>
+    </div>
+  }
+
+  @if (errorMessage && !isLoading) {
+    <div class="error-banner">
+      <mat-icon>error</mat-icon>
+      <span>{{ errorMessage }}</span>
+      <button mat-button color="warn" (click)="loadClaim()">Retry</button>
+    </div>
+  }
+
+  <!-- Equipment Claim View -->
+  @if (equipmentClaim && !isLoading) {
+    <header class="claim-header-card">
+      <div class="header-left">
+        <div class="badge-row">
+          <span class="status-badge" [ngClass]="getStatusClass(equipmentClaim.status)">
+            {{ equipmentClaim.status }}
+          </span>
+          <span class="policy-chip">
+            <mat-icon>verified_user</mat-icon>
+            Policy #{{ equipmentClaim.policyNumber }}
+          </span>
+        </div>
+        <h1 class="claim-title">Equipment Claim #{{ equipmentClaim.claimNumber }}</h1>
+        <p class="claim-subtitle">Filed on {{ equipmentClaim.submittedAt | date:'medium' }}</p>
+      </div>
+
+      <div class="header-right">
+        @if (canReview && equipmentClaim.status !== 'APPROVED' && equipmentClaim.status !== 'SETTLED') {
+          <a mat-raised-button color="accent" [routerLink]="['/claims/equipment', equipmentClaim.id, 'review']" class="review-btn">
+            <mat-icon>rate_review</mat-icon>
+            <span>Assess / Settle Claim</span>
+          </a>
+        }
+      </div>
+    </header>
+
+    <!-- Details Grid -->
+    <div class="details-grid">
+      <!-- Incident Card -->
+      <mat-card class="detail-card">
+        <mat-card-header>
+          <div mat-card-avatar class="avatar-icon icon-amber">
+            <mat-icon>report_problem</mat-icon>
+          </div>
+          <mat-card-title>Incident Particulars</mat-card-title>
+          <mat-card-subtitle>Reported Peril & Location</mat-card-subtitle>
+        </mat-card-header>
+        <mat-card-content class="card-body">
+          <div class="info-row">
+            <span class="info-label">Equipment Model:</span>
+            <span class="info-val font-semibold">{{ equipmentClaim.equipmentName || 'Asset #' + equipmentClaim.equipmentId }}</span>
+          </div>
+          <div class="info-row">
+            <span class="info-label">Peril Type:</span>
+            <span class="info-val">{{ equipmentClaim.incidentType }}</span>
+          </div>
+          <div class="info-row">
+            <span class="info-label">Incident Date:</span>
+            <span class="info-val">{{ equipmentClaim.incidentDate | date:'mediumDate' }}</span>
+          </div>
+          <div class="info-row">
+            <span class="info-label">Location:</span>
+            <span class="info-val">{{ equipmentClaim.incidentLocation || 'Not specified' }}</span>
+          </div>
+          <div class="info-row">
+            <span class="info-label">Police Report:</span>
+            <span class="info-val">
+              @if (equipmentClaim.reportingPolice === 'YES') {
+                <span class="pill-info">{{ equipmentClaim.policeReportNumber || 'Filed' }}</span>
+              } @else {
+                <span class="pill-muted">No Police Report</span>
+              }
+            </span>
+          </div>
+        </mat-card-content>
+      </mat-card>
+
+      <!-- Financial Card -->
+      <mat-card class="detail-card">
+        <mat-card-header>
+          <div mat-card-avatar class="avatar-icon icon-green">
+            <mat-icon>payments</mat-icon>
+          </div>
+          <mat-card-title>Claim Financials</mat-card-title>
+          <mat-card-subtitle>Claimed vs Approved Payout</mat-card-subtitle>
+        </mat-card-header>
+        <mat-card-content class="card-body">
+          <div class="info-row">
+            <span class="info-label">Claimed Loss Amount:</span>
+            <span class="info-val val-claimed">{{ equipmentClaim.claimedAmount | currency:'USD':'symbol':'1.0-0' }}</span>
+          </div>
+          <div class="info-row">
+            <span class="info-label">Approved Settlement:</span>
+            <span class="info-val val-approved">
+              {{ equipmentClaim.approvedAmount ? (equipmentClaim.approvedAmount | currency:'USD':'symbol':'1.0-0') : 'Under Review' }}
+            </span>
+          </div>
+          @if (equipmentClaim.settledAt) {
+            <div class="info-row">
+              <span class="info-label">Settled Date:</span>
+              <span class="info-val">{{ equipmentClaim.settledAt | date:'mediumDate' }}</span>
+            </div>
+          }
+        </mat-card-content>
+      </mat-card>
+    </div>
+
+    <!-- Description & Evidence -->
+    <mat-card class="section-card">
+      <mat-card-header>
+        <mat-card-title>Incident Narrative & Evidence</mat-card-title>
+      </mat-card-header>
+      <mat-card-content class="narrative-content">
+        <blockquote class="narrative-quote">
+          "{{ equipmentClaim.incidentDescription }}"
+        </blockquote>
+        @if (equipmentClaim.documentRefs) {
+          <div class="evidence-box">
+            <strong>Attached Proof / Document References:</strong>
+            <code>{{ equipmentClaim.documentRefs }}</code>
+          </div>
+        }
+      </mat-card-content>
+    </mat-card>
+
+    <!-- Assessor Review Notes -->
+    @if (equipmentClaim.assessorNotes) {
+      <mat-card class="section-card assessment-card">
+        <mat-card-header>
+          <div mat-card-avatar class="avatar-icon icon-purple">
+            <mat-icon>rate_review</mat-icon>
+          </div>
+          <mat-card-title>Assessor Findings</mat-card-title>
+          <mat-card-subtitle>Reviewed on {{ equipmentClaim.reviewedAt | date:'medium' }}</mat-card-subtitle>
+        </mat-card-header>
+        <mat-card-content class="assessment-content">
+          <p class="assessor-notes">{{ equipmentClaim.assessorNotes }}</p>
+          @if (equipmentClaim.assessorId) {
+            <span class="assessor-tag">Assessor ID: {{ equipmentClaim.assessorId }}</span>
+          }
+        </mat-card-content>
+      </mat-card>
+    }
+  }
+
+  <!-- Income Claim View -->
+  @if (incomeClaim && !isLoading) {
+    <header class="claim-header-card">
+      <div class="header-left">
+        <div class="badge-row">
+          <span class="status-badge" [ngClass]="getStatusClass(incomeClaim.status)">
+            {{ incomeClaim.status }}
+          </span>
+          <span class="policy-chip">
+            <mat-icon>shield</mat-icon>
+            Policy #{{ incomeClaim.policyNumber }}
+          </span>
+        </div>
+        <h1 class="claim-title">Income Claim #{{ incomeClaim.claimNumber }}</h1>
+        <p class="claim-subtitle">Filed by {{ incomeClaim.freelancerName }} on {{ incomeClaim.submittedAt | date:'medium' }}</p>
+      </div>
+
+      <div class="header-right">
+        @if (canReview && incomeClaim.status !== 'APPROVED' && incomeClaim.status !== 'SETTLED') {
+          <a mat-raised-button color="accent" [routerLink]="['/claims/income', incomeClaim.id, 'review']" class="review-btn">
+            <mat-icon>rate_review</mat-icon>
+            <span>Assess / Settle Claim</span>
+          </a>
+        }
+      </div>
+    </header>
+
+    <!-- Details Grid -->
+    <div class="details-grid">
+      <!-- Cause Card -->
+      <mat-card class="detail-card">
+        <mat-card-header>
+          <div mat-card-avatar class="avatar-icon icon-purple">
+            <mat-icon>volunteer_activism</mat-icon>
+          </div>
+          <mat-card-title>Termination Particulars</mat-card-title>
+          <mat-card-subtitle>Cause & Client Entity</mat-card-subtitle>
+        </mat-card-header>
+        <mat-card-content class="card-body">
+          <div class="info-row">
+            <span class="info-label">Claimant:</span>
+            <span class="info-val font-semibold">{{ incomeClaim.freelancerName }}</span>
+          </div>
+          <div class="info-row">
+            <span class="info-label">Client Name:</span>
+            <span class="info-val">{{ incomeClaim.contractingClientName || 'N/A' }}</span>
+          </div>
+          <div class="info-row">
+            <span class="info-label">Termination Cause:</span>
+            <span class="info-val">{{ incomeClaim.terminationType }}</span>
+          </div>
+          <div class="info-row">
+            <span class="info-label">Termination Date:</span>
+            <span class="info-val">{{ incomeClaim.terminationDate | date:'mediumDate' }}</span>
+          </div>
+          @if (incomeClaim.medicalCondition) {
+            <div class="info-row">
+              <span class="info-label">Medical Condition:</span>
+              <span class="info-val">{{ incomeClaim.medicalCondition }}</span>
+            </div>
+            <div class="info-row">
+              <span class="info-label">Physician:</span>
+              <span class="info-val">{{ incomeClaim.treatingPhysician }}</span>
+            </div>
+          }
+        </mat-card-content>
+      </mat-card>
+
+      <!-- Financial Card -->
+      <mat-card class="detail-card">
+        <mat-card-header>
+          <div mat-card-avatar class="avatar-icon icon-green">
+            <mat-icon>payments</mat-icon>
+          </div>
+          <mat-card-title>Benefit Calculation</mat-card-title>
+          <mat-card-subtitle>Monthly Benefit x Duration</mat-card-subtitle>
+        </mat-card-header>
+        <mat-card-content class="card-body">
+          <div class="info-row">
+            <span class="info-label">Monthly Declared:</span>
+            <span class="info-val">{{ incomeClaim.monthlyBenefitClaimed | currency:'USD':'symbol':'1.0-0' }}</span>
+          </div>
+          <div class="info-row">
+            <span class="info-label">Months Claimed:</span>
+            <span class="info-val">{{ incomeClaim.benefitMonthsClaimed }} Months</span>
+          </div>
+          <div class="info-row">
+            <span class="info-label">Total Claimed:</span>
+            <span class="info-val val-claimed">
+              {{ (incomeClaim.totalBenefitClaimed || (incomeClaim.monthlyBenefitClaimed * incomeClaim.benefitMonthsClaimed)) | currency:'USD':'symbol':'1.0-0' }}
+            </span>
+          </div>
+          <div class="info-row">
+            <span class="info-label">Approved Benefit:</span>
+            <span class="info-val val-approved">
+              {{ incomeClaim.approvedBenefitAmount ? (incomeClaim.approvedBenefitAmount | currency:'USD':'symbol':'1.0-0') : 'Under Assessment' }}
+            </span>
+          </div>
+        </mat-card-content>
+      </mat-card>
+    </div>
+
+    <!-- Description -->
+    <mat-card class="section-card">
+      <mat-card-header>
+        <mat-card-title>Termination Statement</mat-card-title>
+      </mat-card-header>
+      <mat-card-content class="narrative-content">
+        <blockquote class="narrative-quote">
+          "{{ incomeClaim.terminationDescription }}"
+        </blockquote>
+        @if (incomeClaim.documentRefs) {
+          <div class="evidence-box">
+            <strong>Attached Proof / Document References:</strong>
+            <code>{{ incomeClaim.documentRefs }}</code>
+          </div>
+        }
+      </mat-card-content>
+    </mat-card>
+
+    <!-- Assessor Review Notes -->
+    @if (incomeClaim.assessorNotes) {
+      <mat-card class="section-card assessment-card">
+        <mat-card-header>
+          <div mat-card-avatar class="avatar-icon icon-purple">
+            <mat-icon>rate_review</mat-icon>
+          </div>
+          <mat-card-title>Assessor Findings</mat-card-title>
+          <mat-card-subtitle>Reviewed on {{ incomeClaim.reviewedAt | date:'medium' }}</mat-card-subtitle>
+        </mat-card-header>
+        <mat-card-content class="assessment-content">
+          <p class="assessor-notes">{{ incomeClaim.assessorNotes }}</p>
+          @if (incomeClaim.assessorId) {
+            <span class="assessor-tag">Assessor ID: {{ incomeClaim.assessorId }}</span>
+          }
+        </mat-card-content>
+      </mat-card>
+    }
+  }
+</div>

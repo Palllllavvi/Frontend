@@ -1,0 +1,108 @@
+<div class="role-dashboard">
+  <!-- Role Header -->
+  <div class="dashboard-header-card">
+    <div class="header-left">
+      <div class="role-icon-badge underwriter-theme">
+        <mat-icon>security</mat-icon>
+      </div>
+      <div>
+        <h1 class="header-title">Underwriting Terminal</h1>
+        <p class="header-subtitle">
+          Risk calculation models, policy binding approval, and portfolio exposure oversight
+        </p>
+      </div>
+    </div>
+    <div class="header-right">
+      <a mat-raised-button color="primary" routerLink="/risk" class="action-btn">
+        <mat-icon>calculate</mat-icon>
+        <span>Underwrite Risk</span>
+      </a>
+    </div>
+  </div>
+
+  @if (loading) {
+    <div class="loading-state">
+      <mat-spinner diameter="40"></mat-spinner>
+      <span>Loading underwriting portfolio...</span>
+    </div>
+  } @else {
+    <!-- Underwriter Cards: Policies Issued, Equipment Policies, Income Policies -->
+    <div class="metrics-grid">
+      <!-- Policies Issued Card -->
+      <mat-card class="metric-card card-purple">
+        <div class="metric-icon-box bg-purple">
+          <mat-icon>verified</mat-icon>
+        </div>
+        <div class="metric-details">
+          <span class="metric-label">Policies Issued</span>
+          <span class="metric-value">{{ stats.policiesIssued }}</span>
+          <span class="metric-hint">Total bound contracts</span>
+        </div>
+        <a mat-button color="primary" routerLink="/policies" class="card-link">Manage Policies &rarr;</a>
+      </mat-card>
+
+      <!-- Equipment Policies Card -->
+      <mat-card class="metric-card card-blue">
+        <div class="metric-icon-box bg-blue">
+          <mat-icon>devices_other</mat-icon>
+        </div>
+        <div class="metric-details">
+          <span class="metric-label">Equipment Policies</span>
+          <span class="metric-value">{{ stats.equipmentPolicies }}</span>
+          <span class="metric-hint">Gear & hardware risk lines</span>
+        </div>
+        <a mat-button color="primary" routerLink="/policies" class="card-link">View Equipment Policies &rarr;</a>
+      </mat-card>
+
+      <!-- Income Policies Card -->
+      <mat-card class="metric-card card-emerald">
+        <div class="metric-icon-box bg-emerald">
+          <mat-icon>payments</mat-icon>
+        </div>
+        <div class="metric-details">
+          <span class="metric-label">Income Policies</span>
+          <span class="metric-value">{{ stats.incomePolicies }}</span>
+          <span class="metric-hint">Earnings protection lines</span>
+        </div>
+        <a mat-button color="primary" routerLink="/policies" class="card-link">View Income Policies &rarr;</a>
+      </mat-card>
+    </div>
+
+    <!-- Underwriting Operations -->
+    <div class="workflow-cards-grid">
+      <mat-card class="workflow-card">
+        <mat-card-header>
+          <div mat-card-avatar class="workflow-avatar bg-purple">
+            <mat-icon>speed</mat-icon>
+          </div>
+          <mat-card-title>Dynamic Risk Engine</mat-card-title>
+          <mat-card-subtitle>Automated coefficient pricing</mat-card-subtitle>
+        </mat-card-header>
+        <mat-card-content class="workflow-desc">
+          Evaluate freelancer experience, equipment age, and average monthly revenue to adjust premium rates.
+        </mat-card-content>
+        <mat-divider></mat-divider>
+        <mat-card-actions align="end">
+          <a mat-stroked-button color="primary" routerLink="/risk">Risk Engine</a>
+        </mat-card-actions>
+      </mat-card>
+
+      <mat-card class="workflow-card">
+        <mat-card-header>
+          <div mat-card-avatar class="workflow-avatar bg-blue">
+            <mat-icon>rule_folder</mat-icon>
+          </div>
+          <mat-card-title>Quote Underwriting</mat-card-title>
+          <mat-card-subtitle>Pending quote binding</mat-card-subtitle>
+        </mat-card-header>
+        <mat-card-content class="workflow-desc">
+          Review quote requests submitted by freelancers, verify deductibles, and issue binding certificates.
+        </mat-card-content>
+        <mat-divider></mat-divider>
+        <mat-card-actions align="end">
+          <a mat-stroked-button color="primary" routerLink="/policies">Review Quotes</a>
+        </mat-card-actions>
+      </mat-card>
+    </div>
+  }
+</div>

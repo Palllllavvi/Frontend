@@ -1,0 +1,153 @@
+.quote-result-wrapper {
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+}
+
+.quote-card {
+  border-radius: 12px;
+  border: 1px solid #e2e8f0;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.06);
+}
+
+.quote-type-icon {
+  font-size: 28px;
+  width: 28px;
+  height: 28px;
+}
+
+.quote-type-icon.equipment {
+  color: #0284c7;
+}
+
+.quote-type-icon.income {
+  color: #059669;
+}
+
+.quote-summary-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+  gap: 1rem;
+  margin: 1rem 0;
+}
+
+.summary-item {
+  display: flex;
+  flex-direction: column;
+  gap: 0.25rem;
+}
+
+.summary-label {
+  font-size: 0.72rem;
+  font-weight: 600;
+  color: #94a3b8;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+
+.summary-value {
+  font-size: 0.95rem;
+  font-weight: 600;
+  color: #1e293b;
+}
+
+.summary-value.primary {
+  font-size: 1.25rem;
+  color: #1d4ed8;
+}
+
+.section-divider {
+  margin: 1rem 0 !important;
+}
+
+.premium-breakdown {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.breakdown-title {
+  font-size: 0.85rem;
+  font-weight: 700;
+  color: #475569;
+  margin: 0 0 0.5rem;
+}
+
+.breakdown-row {
+  display: flex;
+  justify-content: space-between;
+  font-size: 0.875rem;
+  color: #475569;
+}
+
+.breakdown-row.total-row {
+  font-weight: 700;
+  color: #0f172a;
+  font-size: 1rem;
+  margin-top: 0.25rem;
+}
+
+.total-amount {
+  color: #1d4ed8;
+  font-size: 1.1rem;
+}
+
+.discount {
+  color: #16a34a;
+}
+
+.chip-list {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+  margin-top: 0.5rem;
+}
+
+.peril-chip {
+  background-color: #eff6ff !important;
+  color: #1d4ed8 !important;
+  font-size: 0.78rem !important;
+}
+
+.exclusion-chip {
+  background-color: #fef2f2 !important;
+  color: #dc2626 !important;
+  font-size: 0.78rem !important;
+}
+
+.terms-list {
+  padding-left: 1.25rem;
+  margin: 0.5rem 0;
+  color: #475569;
+  font-size: 0.875rem;
+  line-height: 1.6;
+}
+
+.underwriting-note {
+  display: flex;
+  align-items: flex-start;
+  gap: 0.5rem;
+  background: #f0fdf4;
+  border-left: 4px solid #16a34a;
+  border-radius: 4px;
+  padding: 0.75rem;
+  margin-top: 0.5rem;
+}
+
+.note-icon {
+  color: #16a34a;
+  flex-shrink: 0;
+  font-size: 18px;
+  margin-top: 2px;
+}
+
+.underwriting-note p {
+  font-size: 0.875rem;
+  color: #166534;
+  margin: 0;
+  line-height: 1.5;
+}
+
+mat-card-actions {
+  padding: 1rem 1.5rem !important;
+}
